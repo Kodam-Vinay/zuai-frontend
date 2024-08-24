@@ -102,7 +102,7 @@ export const TEXT_COLORS = {
   PUBLISHED_DURATION_COLOR: "#7A8196",
 };
 
-export const API_URL = process.env.REACT_APP_LOCAL_URL;
+export const API_URL = process.env.REACT_APP_ZUAI_BACKEND_URL;
 
 export const storeToastError = ({ errorMessage }) => {
   toast.error(errorMessage, {
