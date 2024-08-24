@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import userSlice from "./slices/userSlice";
+import popupSlice from "./slices/popupSlice";
 
 const persistConfig = {
   key: "blog_data",
@@ -17,6 +18,7 @@ const persistSliceReducer = persistReducer(persistConfig, reducers);
 const store = configureStore({
   reducer: {
     persistSliceReducer,
+    popup: popupSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

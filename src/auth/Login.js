@@ -6,6 +6,7 @@ import { postRequest } from "../api/apiCall";
 import { useDispatch } from "react-redux";
 import { storeUserInfo } from "../redux/slices/userSlice";
 import { useNavigate } from "react-router-dom";
+import { changeConfirmState } from "../redux/slices/popupSlice";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -29,15 +30,18 @@ const Login = () => {
       email,
       password,
     };
+    dispatch(changeConfirmState(true));
     const res = await postRequest({
       apiUrl: "users/login",
       setError,
       setIsError,
       details,
+      type: "auth",
     });
     if (res?.status) {
       navigate(NAVIGATION_LINKS.home.path);
       dispatch(storeUserInfo(res?.data?.userDetails));
+      dispatch(changeConfirmState(false));
     } else {
       setIsError(true);
       setError(res?.message);

@@ -38,6 +38,7 @@ const JoinNow = () => {
       setError,
       setIsError,
       details,
+      type: "auth",
     });
     if (res?.status) {
       navigate(NAVIGATION_LINKS.home.path);

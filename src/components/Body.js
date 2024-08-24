@@ -1,10 +1,22 @@
 import { Box } from "@mui/material";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Header from "./Header";
 import SideBar from "./SideBar";
 import { BACKGROUND_COLORS } from "../utils/constants";
+import { useDispatch, useSelector } from "react-redux";
+import Popup from "./Popup";
+import { useEffect } from "react";
+import { togglePopupState } from "../redux/slices/popupSlice";
 
 const Body = () => {
+  const dispatch = useDispatch();
+  const { pathname } = useLocation();
+  const isPopupOpen = useSelector((store) => store?.popup?.isOpen);
+
+  useEffect(() => {
+    dispatch(togglePopupState(false));
+  }, [pathname]);
+
   return (
     <Box
       sx={{
@@ -26,6 +38,7 @@ const Body = () => {
         }}
       >
         <SideBar />
+        {isPopupOpen && <Popup />}
         <Box
           sx={{
             backgroundColor: BACKGROUND_COLORS.PRIMARY_COLOR,

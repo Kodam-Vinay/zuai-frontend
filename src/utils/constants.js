@@ -30,9 +30,9 @@ export const SIDEBAR_NAVIGATION_LINKS = {
     label: "Icon4",
     element: <Icon4 />,
   },
-  icon5: {
-    path: "/icon5",
-    label: "Icon5",
+  addpost: {
+    path: "/add-post",
+    label: "Add Post",
     element: <Icon5 />,
   },
   icon6: {
@@ -73,11 +73,20 @@ export const NAVIGATION_LINKS = {
   },
 };
 
+export const POPUP_TYPES = {
+  newpost: {
+    title: "New Post",
+  },
+  updatepost: {
+    title: "Update Post",
+  },
+};
+
 export const BACKGROUND_COLORS = {
   WHITE_COLOR: "#ffffff",
   PRIMARY_COLOR: "#E5ECF3",
   SECONDARY_COLOR: "#6947BF",
-  IMAGE_BACKGEOUND_COLOR: "#D6DFE4",
+  IMAGE_BACKGROUND_COLOR: "#D6DFE4",
   LOGIN_BUTTON_COLOR: "#FCFBFD",
 };
 
@@ -124,3 +133,10 @@ export const storeToastSuccess = ({ successMessage }) => {
 
 export const CLOUDINARY_IMAGE_ACCESS_URL =
   process.env.REACT_APP_IMAGE_ACCESS_URL;
+
+export const checkAnyChangesMadeFn = (formData, postDetails) => {
+  const checkTitleChange = formData?.title !== postDetails?.title;
+  const checkContentChange = formData?.content !== postDetails?.content;
+  const checkImageChange = formData?.image !== postDetails?.image;
+  return checkImageChange || checkContentChange || checkTitleChange;
+};

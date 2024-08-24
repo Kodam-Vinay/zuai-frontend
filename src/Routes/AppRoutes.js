@@ -6,7 +6,7 @@ import { NAVIGATION_LINKS } from "../utils/constants";
 import Login from "../auth/Login";
 import JoinNow from "../auth/JoinNow";
 import AuthProtectedRoute from "../protectedRoutes.js/AuthProtectedRoute";
-import CompletePostDetails from "../components/CompletePostDetails";
+import CompletePostDetails from "../pages/CompletePostDetails";
 
 const AppRoutes = () => {
   const browserRouter = createBrowserRouter([
@@ -16,7 +16,7 @@ const AppRoutes = () => {
       errorElement: <ErrorPage />,
       children: [
         {
-          path: "",
+          path: NAVIGATION_LINKS.home.path,
           element: <Home />,
         },
         {
@@ -30,6 +30,18 @@ const AppRoutes = () => {
               <Login />
             </AuthProtectedRoute>
           ),
+        },
+        {
+          path: NAVIGATION_LINKS.joinnow.path,
+          element: (
+            <AuthProtectedRoute>
+              <JoinNow />
+            </AuthProtectedRoute>
+          ),
+        },
+        {
+          path: "*",
+          element: <Home />,
         },
       ],
     },

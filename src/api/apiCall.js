@@ -4,15 +4,38 @@ export const postRequest = async ({
   apiUrl,
   setError,
   setIsError,
+  token,
+  type,
 }) => {
   try {
-    const options = {
+    const options1 = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(details),
     };
+    const options2 = {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: details,
+    };
+    const options3 = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(details),
+    };
+    const options =
+      apiUrl === "posts/upload-image"
+        ? options2
+        : apiUrl === "posts"
+        ? options3
+        : options1;
     const response = await fetch(API_URL + apiUrl, options);
     const data = await response.json();
     if (response.ok) {

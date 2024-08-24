@@ -1,20 +1,11 @@
-import { Box, Button, Typography } from "@mui/material";
-import Edit from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Box, Typography } from "@mui/material";
 import {
   BACKGROUND_COLORS,
-  BORDER_COLORS,
   CLOUDINARY_IMAGE_ACCESS_URL,
   NAVIGATION_LINKS,
-  storeToastError,
-  storeToastSuccess,
-  TEXT_COLORS,
 } from "../utils/constants";
 import "../App.css";
-import { useState } from "react";
-import { deleteRequest } from "../api/apiCall";
-import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const EachPost = ({ postDetails }) => {
   return (
@@ -36,19 +27,6 @@ const EachPost = ({ postDetails }) => {
         to={`${NAVIGATION_LINKS.postdetails.path}/${postDetails.post_id}`}
         style={{ color: "black" }}
       >
-        {postDetails?.image && (
-          <Box
-            component="img"
-            src={CLOUDINARY_IMAGE_ACCESS_URL + postDetails?.image}
-            alt={postDetails?.title}
-            sx={{
-              width: "100%",
-              height: "auto",
-              maxWidth: "100%",
-              objectFit: "cover",
-            }}
-          />
-        )}
         <Typography
           variant="h3"
           sx={{
@@ -65,6 +43,20 @@ const EachPost = ({ postDetails }) => {
         >
           {postDetails?.content}
         </Typography>
+        {postDetails?.image && (
+          <Box
+            component="img"
+            src={CLOUDINARY_IMAGE_ACCESS_URL + postDetails?.image}
+            alt={postDetails?.title}
+            sx={{
+              width: "100%",
+              height: "auto",
+              maxWidth: "100%",
+              objectFit: "cover",
+              marginTop: 1,
+            }}
+          />
+        )}
       </Link>
     </Box>
   );

@@ -2,42 +2,51 @@ import {
   Box,
   Button,
   CircularProgress,
-  FormControl,
   IconButton,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
   TextField,
   Typography,
 } from "@mui/material";
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { BACKGROUND_COLORS, NAVIGATION_LINKS } from "../../utils/constants";
+import CloseIcon from "@mui/icons-material/Close";
+import {
+  BACKGROUND_COLORS,
+  CLOUDINARY_IMAGE_ACCESS_URL,
+  NAVIGATION_LINKS,
+  POPUP_TYPES,
+  TEXT_COLORS,
+} from "../../utils/constants";
 import "../../App.css";
+import { useSelector } from "react-redux";
 
 const PostForm = ({
   formData,
   setFormData,
-  showPassword,
-  setShowPassword,
   handlePostForm,
-  isError,
-  error,
   loading,
+  isImageUploadClicked,
+  handleImageUpload,
+  handleFileDrop,
+  handleDragOver,
+  isSubmitClicked,
+  checkAnyChangesMade,
 }) => {
   const { pathname: activePath } = useLocation();
-  const nameInputRef = useRef();
-  const emailInputRef = useRef();
+  const titleInputRef = useRef();
+  const imageInputRef = useRef();
+  const type = useSelector((store) => store?.popup?.type);
 
   useEffect(() => {
-    if (activePath === NAVIGATION_LINKS.login.path) {
-      emailInputRef.current.focus();
-    }
-    if (activePath === NAVIGATION_LINKS.joinnow.path) {
-      nameInputRef.current.focus();
+    if (titleInputRef.current) {
+      titleInputRef.current.focus();
     }
   }, [activePath]);
+
+  const handleClickImageUpload = () => {
+    if (imageInputRef.current) {
+      imageInputRef.current.click();
+    }
+  };
 
   const handleChangeInput = (e) => {
     const value = e.target.value;
@@ -46,14 +55,17 @@ const PostForm = ({
       [e.target.id]: value,
     }));
   };
+
   return (
     <form
       style={{
-        height: "100%",
-        width: "100%",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        height: "100%",
+        maxHeight: "500px",
+        overflowY: "auto",
+        paddingBottom: 10,
       }}
       onSubmit={handlePostForm}
     >
@@ -63,133 +75,164 @@ const PostForm = ({
           flexDirection: "column",
           alignItems: "center",
           gap: 2,
+          width: "90%",
+          paddingLeft: 2,
+          paddingRight: 2,
         }}
       >
-        {activePath === NAVIGATION_LINKS.joinnow.path && (
-          <TextField
-            inputRef={nameInputRef}
-            type="text"
-            id="name"
-            label="Name"
-            variant="outlined"
-            sx={{
-              width: "100%",
-              maxWidth: "324px",
-              "& .MuiInputBase-input": {
-                color: BACKGROUND_COLORS.SECONDARY_COLOR,
+        <TextField
+          inputRef={titleInputRef}
+          type="text"
+          id="title"
+          onChange={handleChangeInput}
+          placeholder="Title"
+          variant="outlined"
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                border: "none",
               },
-              "& .MuiInputLabel-root": {
-                color: BACKGROUND_COLORS.SECONDARY_COLOR,
-                "&.Mui-focused": {
-                  color: BACKGROUND_COLORS.SECONDARY_COLOR,
-                },
+              "&:hover fieldset": {
+                border: "none",
               },
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: BACKGROUND_COLORS.SECONDARY_COLOR,
-                },
-                "&:hover fieldset": {
-                  borderColor: BACKGROUND_COLORS.SECONDARY_COLOR,
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: BACKGROUND_COLORS.SECONDARY_COLOR,
-                },
+              "&.Mui-focused fieldset": {
+                border: "none",
               },
-            }}
-            value={formData?.name}
-            onChange={handleChangeInput}
-            autoComplete="name"
-          />
-        )}
+            },
+            "& .MuiOutlinedInput-input": {
+              padding: 0,
+            },
+            width: "90%",
+          }}
+          value={formData?.title}
+        />
 
         <TextField
-          inputRef={emailInputRef}
-          type={"email"}
-          id="email"
-          label={"Email Address"}
-          variant="outlined"
-          sx={{
-            width: "100%",
-            maxWidth: "324px",
-            "& .MuiInputBase-input": {
-              color: BACKGROUND_COLORS.SECONDARY_COLOR,
-            },
-            "& .MuiInputLabel-root": {
-              color: BACKGROUND_COLORS.SECONDARY_COLOR,
-              "&.Mui-focused": {
-                color: BACKGROUND_COLORS.SECONDARY_COLOR,
-              },
-            },
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: BACKGROUND_COLORS.SECONDARY_COLOR,
-              },
-              "&:hover fieldset": {
-                borderColor: BACKGROUND_COLORS.SECONDARY_COLOR,
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: BACKGROUND_COLORS.SECONDARY_COLOR,
-              },
-            },
-          }}
-          value={formData?.email}
+          multiline
+          type="text"
+          id="content"
           onChange={handleChangeInput}
-          autoComplete="email"
-        />
-        <FormControl
+          placeholder="Content"
+          variant="outlined"
           sx={{
-            marginTop: 1,
-            width: "100%",
-            maxWidth: "324px",
-            "& .MuiInputBase-input": {
-              color: BACKGROUND_COLORS.SECONDARY_COLOR,
-            },
-            "& .MuiInputLabel-root": {
-              color: BACKGROUND_COLORS.SECONDARY_COLOR,
-              "&.Mui-focused": {
-                color: BACKGROUND_COLORS.SECONDARY_COLOR,
-              },
-            },
+            width: "90%",
+            marginRight: 4,
+            fontSize: "40px",
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
-                borderColor: BACKGROUND_COLORS.SECONDARY_COLOR,
+                border: "none",
               },
               "&:hover fieldset": {
-                borderColor: BACKGROUND_COLORS.SECONDARY_COLOR,
+                border: "none",
               },
               "&.Mui-focused fieldset": {
-                borderColor: BACKGROUND_COLORS.SECONDARY_COLOR,
+                border: "none",
               },
             },
+            "& .MuiOutlinedInput-input": {
+              padding: 0,
+            },
           }}
-          variant="outlined"
-        >
-          <InputLabel htmlFor="outlined-adornment-password">
-            password
-          </InputLabel>
-          <OutlinedInput
-            onChange={handleChangeInput}
-            id={"password"}
-            type={showPassword ? "text" : "password"}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={() => setShowPassword(!showPassword)}
-                  edge="end"
-                  sx={{
-                    color: BACKGROUND_COLORS.SECONDARY_COLOR,
-                  }}
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-            value={formData?.password}
-            label={"Password"}
-            autoComplete="current-password"
-          />
-        </FormControl>
+          value={formData?.content}
+        />
+
+        {loading && isImageUploadClicked ? (
+          <p>Uploading....</p>
+        ) : formData?.image ? (
+          <Box
+            sx={{
+              display: "felx",
+              flexDirection: "column",
+              marginBottom: 2,
+              width: "90%",
+            }}
+          >
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "end",
+              }}
+            >
+              <IconButton
+                onClick={() => setFormData({ image: "" })}
+                type="button"
+                sx={{
+                  height: 20,
+                  width: 20,
+                  zIndex: 20,
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+            </Box>
+            <Box
+              component="img"
+              src={CLOUDINARY_IMAGE_ACCESS_URL + formData?.image}
+              alt={formData?.title}
+              sx={{
+                width: "100%",
+                height: "auto",
+                maxWidth: "100%",
+                objectFit: "cover",
+              }}
+            />
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              rowGap: 2,
+              marginBottom: 2,
+              cursor: "pointer",
+            }}
+            onClick={handleClickImageUpload}
+            onDrop={handleFileDrop}
+            onDragOver={handleDragOver}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+
+                height: "100px",
+                width: "200px",
+                borderRadius: 5,
+                backgroundColor: BACKGROUND_COLORS.IMAGE_BACKGROUND_COLOR,
+                padding: 2,
+              }}
+            >
+              <Typography
+                textAlign={"center"}
+                sx={{
+                  fontWeight: "bold",
+                  color: TEXT_COLORS.IMAGE_PLACEHOLDER_COLOR,
+                }}
+              >
+                Title image Place Holder
+              </Typography>
+            </Box>
+            <TextField
+              inputRef={imageInputRef}
+              onChange={(e) => handleImageUpload(e.target.files[0])}
+              type="file"
+              accept="image/*"
+              variant="outlined"
+              label="Upload Image"
+              InputLabelProps={{ shrink: true }}
+              sx={{
+                display: "none",
+                width: "100%",
+              }}
+            />
+          </Box>
+        )}
+
         <Button
           type="submit"
           variant="contained"
@@ -204,32 +247,24 @@ const PostForm = ({
             marginTop: 1,
             height: 50,
           }}
-          disabled={loading}
+          disabled={
+            !checkAnyChangesMade
+              ? type === POPUP_TYPES.updatepost && !checkAnyChangesMade
+              : loading
+          }
         >
-          {loading ? (
+          {loading && isSubmitClicked ? (
             <CircularProgress
               sx={{
                 color: BACKGROUND_COLORS.SECONDARY_COLOR,
               }}
             />
-          ) : activePath === NAVIGATION_LINKS.login.path ? (
-            NAVIGATION_LINKS.login.label
+          ) : type === POPUP_TYPES.newpost ? (
+            NAVIGATION_LINKS.addpost.label
           ) : (
-            NAVIGATION_LINKS.joinnow.label
+            "Update Post"
           )}
         </Button>
-        {isError && (
-          <Typography
-            variant="p"
-            component="p"
-            marginBottom={4}
-            sx={{
-              color: "red",
-            }}
-          >
-            {error}*
-          </Typography>
-        )}
       </Box>
     </form>
   );

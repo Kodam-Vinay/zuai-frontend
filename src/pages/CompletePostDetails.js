@@ -6,6 +6,7 @@ import {
   BORDER_COLORS,
   CLOUDINARY_IMAGE_ACCESS_URL,
   NAVIGATION_LINKS,
+  POPUP_TYPES,
   storeToastError,
   storeToastSuccess,
   TEXT_COLORS,
@@ -13,11 +14,18 @@ import {
 import "../App.css";
 import { useState } from "react";
 import { deleteRequest } from "../api/apiCall";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import useGetData from "../hooks/useGetData";
+import {
+  changeConfirmState,
+  changePopupType,
+  storePostDetails,
+  togglePopupState,
+} from "../redux/slices/popupSlice";
 
 const CompletePostDetails = () => {
+  const dispatch = useDispatch();
   const params = useParams();
   const [data, setData] = useState({});
   const postDetails = data?.post ? data?.post : {};
@@ -25,7 +33,7 @@ const CompletePostDetails = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [isError, setIsError] = useState(false);
-
+  const isPopupOpen = useSelector((store) => store?.popup?.isOpen);
   const [postHoveredDetails, setPostHoveredDetails] = useState({ post_id: "" });
 
   const userDetails = useSelector(
@@ -46,6 +54,7 @@ const CompletePostDetails = () => {
       return;
     }
     // Delete post logic here
+    dispatch(changeConfirmState(true));
     const res = await deleteRequest({
       apiUrl: "posts/" + post_id,
       setError,
@@ -57,16 +66,26 @@ const CompletePostDetails = () => {
     });
 
     if (res?.status) {
+      dispatch(changeConfirmState(false));
       storeToastSuccess({ successMessage: res?.message });
       navigate(NAVIGATION_LINKS.home.path);
     } else {
-      storeToastError({ errorMessage: res?.message });
+      storeToastError({ errorMessage: res?.message ? res?.message : error });
     }
+  };
+
+  const handleUpdatePost = () => {
+    dispatch(togglePopupState(true));
+    dispatch(changePopupType(POPUP_TYPES.updatepost));
+    dispatch(storePostDetails(postDetails));
   };
 
   return (
     <Box
       sx={{
+        maxHeight: {
+          vxs: "85vh",
+        },
         maxWidth: "500px",
         marginLeft: "auto",
         marginRight: "auto",
@@ -77,8 +96,10 @@ const CompletePostDetails = () => {
         borderRadius: "12px",
         backgroundColor: BACKGROUND_COLORS.WHITE_COLOR,
         cursor: "pointer",
+        overflowY: "auto",
       }}
       onMouseEnter={() =>
+        !isPopupOpen &&
         setPostHoveredDetails({
           post_id: postDetails?.post_id,
         })
@@ -90,25 +111,12 @@ const CompletePostDetails = () => {
       }
     >
       {loading ? (
-        <Box>loading.....</Box>
+        <Box>Loading.....</Box>
       ) : (
         <Link
           to={`${NAVIGATION_LINKS.postdetails.path}/${postDetails.post_id}`}
           style={{ color: "black" }}
         >
-          {postDetails?.image && (
-            <Box
-              component="img"
-              src={CLOUDINARY_IMAGE_ACCESS_URL + postDetails?.image}
-              alt={postDetails?.title}
-              sx={{
-                width: "100%",
-                height: "auto",
-                maxWidth: "100%",
-                objectFit: "cover",
-              }}
-            />
-          )}
           <Typography
             variant="h3"
             sx={{
@@ -125,45 +133,61 @@ const CompletePostDetails = () => {
           >
             {postDetails?.content}
           </Typography>
-          {postHoveredDetails?.post_id === postDetails?.post_id && (
+          {postDetails?.image && (
             <Box
+              component="img"
+              src={CLOUDINARY_IMAGE_ACCESS_URL + postDetails?.image}
+              alt={postDetails?.title}
               sx={{
                 width: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "end",
-                gap: 1,
+                height: "auto",
+                maxWidth: "100%",
+                objectFit: "cover",
+                marginTop: 1,
               }}
-            >
-              <Button
-                sx={{
-                  color: TEXT_COLORS.PUBLISHED_READTIME_LOGIN_COLOR,
-                  backgroundColor: BACKGROUND_COLORS.LOGIN_BUTTON_COLOR,
-                  ":hover": {
-                    backgroundColor: BACKGROUND_COLORS.LOGIN_BUTTON_COLOR,
-                    opacity: 0.7,
-                  },
-                  border: `1px solid ${BORDER_COLORS.LOGIN_BUTTON_BORDER_COLOR}`,
-                }}
-              >
-                <Edit />
-              </Button>
-              <Button
-                sx={{
-                  color: BACKGROUND_COLORS.WHITE_COLOR,
-                  backgroundColor: BACKGROUND_COLORS.SECONDARY_COLOR,
-                  ":hover": {
-                    backgroundColor: BACKGROUND_COLORS.SECONDARY_COLOR,
-                    opacity: 0.7,
-                  },
-                  border: `1px solid ${BORDER_COLORS.LOGIN_BUTTON_BORDER_COLOR}`,
-                }}
-                onClick={() => handleDeletePost(postDetails?.post_id)}
-              >
-                <DeleteIcon />
-              </Button>
-            </Box>
+            />
           )}
+          {postHoveredDetails?.post_id === postDetails?.post_id &&
+            userDetails?.token && (
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "end",
+                  gap: 1,
+                }}
+              >
+                <Button
+                  sx={{
+                    color: TEXT_COLORS.PUBLISHED_READTIME_LOGIN_COLOR,
+                    backgroundColor: BACKGROUND_COLORS.LOGIN_BUTTON_COLOR,
+                    ":hover": {
+                      backgroundColor: BACKGROUND_COLORS.LOGIN_BUTTON_COLOR,
+                      opacity: 0.7,
+                    },
+                    border: `1px solid ${BORDER_COLORS.LOGIN_BUTTON_BORDER_COLOR}`,
+                  }}
+                  onClick={() => handleUpdatePost(postDetails?.post_id)}
+                >
+                  <Edit />
+                </Button>
+                <Button
+                  sx={{
+                    color: BACKGROUND_COLORS.WHITE_COLOR,
+                    backgroundColor: BACKGROUND_COLORS.SECONDARY_COLOR,
+                    ":hover": {
+                      backgroundColor: BACKGROUND_COLORS.SECONDARY_COLOR,
+                      opacity: 0.7,
+                    },
+                    border: `1px solid ${BORDER_COLORS.LOGIN_BUTTON_BORDER_COLOR}`,
+                  }}
+                  onClick={() => handleDeletePost(postDetails?.post_id)}
+                >
+                  <DeleteIcon />
+                </Button>
+              </Box>
+            )}
         </Link>
       )}
     </Box>

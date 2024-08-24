@@ -57,6 +57,14 @@ const SideBar = () => {
                     height: 35,
                     width: 35,
                     borderRadius: 3,
+                    ":hover": {
+                      backgroundColor:
+                        acitvePath.pathname ===
+                        NAVIGATION_LINKS[eachNavigation].path
+                          ? BACKGROUND_COLORS.SECONDARY_COLOR
+                          : "",
+                      opacity: 0.7,
+                    },
                   }}
                 >
                   {cloneElement(
@@ -68,6 +76,11 @@ const SideBar = () => {
                           NAVIGATION_LINKS[eachNavigation].path
                             ? "white"
                             : "",
+                        transition: "opacity 0.3s ease",
+                        opacity: 1,
+                        "&:hover": {
+                          opacity: 0.7,
+                        },
                       },
                     }
                   )}
@@ -93,6 +106,14 @@ const SideBar = () => {
                   width: 35,
                   borderRadius: 3,
                   marginTop: "auto",
+                  ":hover": {
+                    backgroundColor:
+                      acitvePath.pathname ===
+                      NAVIGATION_LINKS[eachNavigation].path
+                        ? BACKGROUND_COLORS.SECONDARY_COLOR
+                        : "",
+                    opacity: 0.7,
+                  },
                 }}
               >
                 {cloneElement(
@@ -104,6 +125,11 @@ const SideBar = () => {
                         NAVIGATION_LINKS[eachNavigation].path
                           ? "white"
                           : "",
+                      transition: "opacity 0.3s ease",
+                      opacity: 1,
+                      "&:hover": {
+                        opacity: 0.7,
+                      },
                     },
                   }
                 )}
@@ -127,6 +153,14 @@ const SideBar = () => {
                   height: 35,
                   width: 35,
                   borderRadius: 3,
+                  ":hover": {
+                    backgroundColor:
+                      acitvePath.pathname ===
+                      NAVIGATION_LINKS[eachNavigation].path
+                        ? BACKGROUND_COLORS.SECONDARY_COLOR
+                        : "",
+                    opacity: 0.7,
+                  },
                 }}
               >
                 {cloneElement(
@@ -138,6 +172,11 @@ const SideBar = () => {
                         NAVIGATION_LINKS[eachNavigation].path
                           ? "white"
                           : "",
+                      transition: "opacity 0.3s ease",
+                      opacity: 1,
+                      "&:hover": {
+                        opacity: 0.7,
+                      },
                     },
                   }
                 )}

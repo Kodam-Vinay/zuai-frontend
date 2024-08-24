@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   FormControl,
   IconButton,
   InputAdornment,
@@ -7,18 +8,30 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
-import { BACKGROUND_COLORS, storeToastError } from "../utils/constants";
-import { useState } from "react";
+import {
+  BACKGROUND_COLORS,
+  BORDER_COLORS,
+  POPUP_TYPES,
+  storeToastError,
+  TEXT_COLORS,
+} from "../utils/constants";
+import { useEffect, useState } from "react";
 import useGetData from "../hooks/useGetData";
 import Posts from "../components/Posts";
+import { useDispatch, useSelector } from "react-redux";
+import { changePopupType, togglePopupState } from "../redux/slices/popupSlice";
 
 const Home = () => {
+  const dispatch = useDispatch();
   const [error, setError] = useState("");
   const [isError, setIsError] = useState(false);
   const [data, setData] = useState({});
   const [isSearchClicked, setSearchClicked] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const userDetails = useSelector(
+    (store) => store?.persistSliceReducer?.user?.userInfo
+  );
 
   const handleSearchInput = (e) => {
     if (e.key === "Enter") {
@@ -32,10 +45,16 @@ const Home = () => {
 
   const handleSearch = () => {
     if (!searchInput?.toString().trim()) {
-      storeToastError({ errorMessage: "Please enter at least one character" });
+      setIsError(true);
+      setError("Please enter a search query");
     } else {
       setSearchClicked(true);
     }
+  };
+
+  const handleAddPost = () => {
+    dispatch(togglePopupState(true));
+    dispatch(changePopupType(POPUP_TYPES.newpost));
   };
 
   useGetData({
@@ -47,6 +66,12 @@ const Home = () => {
     setSearchClicked,
     setLoading,
   });
+
+  useEffect(() => {
+    if (isError) {
+      storeToastError({ errorMessage: error });
+    }
+  }, [isError]);
 
   return (
     <Box
@@ -62,8 +87,9 @@ const Home = () => {
         sx={{
           width: "100%",
           display: "flex",
-          flexDirection: "column",
+          flexDirection: "row",
           alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <FormControl
@@ -71,6 +97,7 @@ const Home = () => {
             marginTop: 1,
             width: "100%",
             maxWidth: "324px",
+            height: "40px",
             "& .MuiInputBase-input": {
               color: BACKGROUND_COLORS.SECONDARY_COLOR,
             },
@@ -115,6 +142,30 @@ const Home = () => {
             value={searchInput}
           />
         </FormControl>
+        {userDetails?.token && (
+          <Button
+            onClick={handleAddPost}
+            sx={{
+              color: TEXT_COLORS.PUBLISHED_READTIME_LOGIN_COLOR,
+              backgroundColor: BACKGROUND_COLORS.LOGIN_BUTTON_COLOR,
+              ":hover": {
+                backgroundColor: BACKGROUND_COLORS.LOGIN_BUTTON_COLOR,
+                opacity: 0.7,
+              },
+              textTransform: "capitalize",
+              paddingLeft: 1,
+              paddingRight: 1,
+              borderTopLeftRadius: "20px",
+              borderTopRightRadius: "20px",
+              borderBottomRightRadius: "20px",
+              borderBottomLeftRadius: "20px",
+              border: `1px solid ${BORDER_COLORS.LOGIN_BUTTON_BORDER_COLOR}`,
+              marginLeft: 2,
+            }}
+          >
+            New Post +
+          </Button>
+        )}
       </Box>
       <Box
         sx={{

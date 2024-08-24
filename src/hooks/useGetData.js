@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { getRequest } from "../api/apiCall";
 import { useLocation } from "react-router-dom";
 import { NAVIGATION_LINKS } from "../utils/constants";
+import { useSelector } from "react-redux";
 
 const useGetData = ({
   setData,
@@ -12,7 +13,9 @@ const useGetData = ({
   setSearchClicked,
   setLoading,
 }) => {
+  const cofirmState = useSelector((store) => store?.popup?.confirm_state);
   const { pathname } = useLocation();
+
   useEffect(() => {
     if (pathname === NAVIGATION_LINKS.home.path) {
       setSearchClicked(false);
@@ -23,13 +26,13 @@ const useGetData = ({
     if (pathname === NAVIGATION_LINKS.home.path) {
       getData();
     }
-  }, [isSearchClicked, pathname]);
+  }, [isSearchClicked, pathname, cofirmState]);
 
   useEffect(() => {
     if (pathname !== NAVIGATION_LINKS.home.path) {
       getData();
     }
-  }, [pathname]);
+  }, [pathname, cofirmState]);
 
   const getData = async () => {
     setLoading(true);
