@@ -29,10 +29,8 @@ const useGetData = ({
   }, [isSearchClicked, pathname, cofirmState]);
 
   useEffect(() => {
-    if (pathname !== NAVIGATION_LINKS.home.path) {
-      getData();
-    }
-  }, [pathname, cofirmState]);
+    getData();
+  }, [pathname]);
 
   const getData = async () => {
     setLoading(true);

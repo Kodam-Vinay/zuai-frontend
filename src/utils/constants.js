@@ -8,6 +8,7 @@ import Icon6 from "../svgs/Icon6";
 import Icon7 from "../svgs/Icon7";
 import Icon8 from "../svgs/Icon8";
 import Icon9 from "../svgs/Icon9";
+import { formatDistanceToNow } from "date-fns";
 
 export const SIDEBAR_NAVIGATION_LINKS = {
   home: {
@@ -139,4 +140,10 @@ export const checkAnyChangesMadeFn = (formData, postDetails) => {
   const checkContentChange = formData?.content !== postDetails?.content;
   const checkImageChange = formData?.image !== postDetails?.image;
   return checkImageChange || checkContentChange || checkTitleChange;
+};
+
+export const dateFormatter = (publishedAt) => {
+  return formatDistanceToNow(new Date(publishedAt), {
+    addSuffix: true,
+  });
 };

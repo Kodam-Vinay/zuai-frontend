@@ -5,6 +5,7 @@ import {
   BACKGROUND_COLORS,
   BORDER_COLORS,
   CLOUDINARY_IMAGE_ACCESS_URL,
+  dateFormatter,
   NAVIGATION_LINKS,
   POPUP_TYPES,
   storeToastError,
@@ -35,7 +36,6 @@ const CompletePostDetails = () => {
   const [isError, setIsError] = useState(false);
   const isPopupOpen = useSelector((store) => store?.popup?.isOpen);
   const [postHoveredDetails, setPostHoveredDetails] = useState({ post_id: "" });
-
   const userDetails = useSelector(
     (store) => store?.persistSliceReducer?.user?.userInfo
   );
@@ -117,14 +117,32 @@ const CompletePostDetails = () => {
           to={`${NAVIGATION_LINKS.postdetails.path}/${postDetails.post_id}`}
           style={{ color: "black" }}
         >
-          <Typography
-            variant="h3"
+          <Box
             sx={{
-              fontSize: "24px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
-            {postDetails?.title}
-          </Typography>
+            <Typography
+              variant="h3"
+              sx={{
+                fontSize: "24px",
+              }}
+            >
+              {postDetails?.title}
+            </Typography>
+            <Typography
+              variant="h5"
+              sx={{
+                fontSize: "14px",
+              }}
+            >
+              {postDetails?.published_date
+                ? dateFormatter(postDetails?.published_date)
+                : new Date().getTime()}
+            </Typography>
+          </Box>
           <Typography
             variant="p"
             sx={{

@@ -111,7 +111,6 @@ const Popup = () => {
   const handleUpdatePost = async () => {
     setSubmitClicked(true);
     setImageUploadClicked(false);
-    console.log(formData);
     if (!formData?.title || !formData?.content) {
       storeToastError({ errorMessage: "Please fill all the fields" });
     }
