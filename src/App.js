@@ -1,24 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import { Provider } from "react-redux";
+import "./App.css";
+import store from "./redux/store";
+import { Box, ThemeProvider } from "@mui/material";
+import { customTheme } from "./utils/materialUiConstants";
+import AppRoutes from "./Routes/AppRoutes";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <Provider store={store}>
+      <ThemeProvider theme={customTheme}>
+        <Box
+          sx={{
+            height: {
+              vxs: "99vh",
+              sm: "100vh",
+            },
+          }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          <ToastContainer />
+          <AppRoutes />
+        </Box>
+      </ThemeProvider>
+    </Provider>
   );
 }
 
